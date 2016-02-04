@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MyCORSystem</string>
+    <string name="title_activity_main">Прога за 1000 баксов</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+</resources>
