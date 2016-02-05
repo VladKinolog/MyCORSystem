@@ -1,5 +1,8 @@
 package com.example.vladyslav_kovega.mycorsystem;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     EditText current, power;
     TextView wire_cross_section;
     String wireCrossSection;
+    private String appVersion = BuildConfig.VERSION_NAME;
 
     WireCalculation wireCalculation;
     public static final String TAG = "MainActivity";
@@ -39,46 +46,51 @@ public class MainActivity extends AppCompatActivity {
         current = (EditText) findViewById(R.id.current);
         power = (EditText) findViewById(R.id.power);
 
+
+
+                // Обработка введенного значения в поле ТОК и переопределение клавиши ГОТОВО цифровой клавиатуры
         current.setOnEditorActionListener(new EditText.OnEditorActionListener() {
 
-            @Override
-            public boolean onEditorAction(TextView v, int actionId,
-                                          KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
-                        || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    //сделать, что нужно по нажатию на Done
-                    try {
-                        gCurrent = Double.parseDouble(current.getText().toString());
-                        Log.e(TAG, "Присваивание после ввода --> " + gCurrent);
-                        //gPower = Double.parseDouble(power.getText().toString());
-                        wireCalculation.setCurrent(gCurrent);
-                        Log.e(TAG, "Установка setCurrent --> " + gCurrent);
-                        wireCrossSection = wireCalculation.wireCross();
-                        Log.e(TAG, "візов метода wireCross() --> " + gCurrent);
-                        wireCalculation.starDelta();
-                        gCurrentStarDeltaLine = wireCalculation.getCurrentStarDeltaLine();
-                        gCurrentStarDeltaShoulder = wireCalculation.getCurrentStarDeltaShoulder();
+
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId,
+                                                  KeyEvent event) {
+                        if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER))
+                                || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                            //сделать, что нужно по нажатию на Done
+                            try {
+
+                                gCurrent = Double.parseDouble(current.getText().toString());
+                                //Log.e(TAG, "Присваивание после ввода --> " + gCurrent);
+                                //gPower = Double.parseDouble(power.getText().toString());
+                                wireCalculation.setCurrent(gCurrent);
+                                //Log.e(TAG, "Установка setCurrent --> " + gCurrent);
+                                wireCrossSection = wireCalculation.wireCross();
+                                //Log.e(TAG, "візов метода wireCross() --> " + gCurrent);
+                                wireCalculation.starDelta();
+                                gCurrentStarDeltaLine = wireCalculation.getCurrentStarDeltaLine();
+                                gCurrentStarDeltaShoulder = wireCalculation.getCurrentStarDeltaShoulder();
 
 
+                            } catch (NumberFormatException e) {
+                                wire_cross_section.setText("Введите корректные значения тока или мощности");
+                            }
+
+                            wire_cross_section.setText(
+                                    "Сечение провода - " + wireCalculation.wireCross() + "\n" +
+                                            "Линейный ток в звезде - " + gCurrentStarDeltaLine + "\n" +
+                                            "Сечение провода для звезды - " + wireCalculation.wireCross(gCurrentStarDeltaLine) + "\n" +
+                                            "Ток в звезде (меньший контактор) - " + gCurrentStarDeltaShoulder + "\n" +
+                                            "Сечение на маленьком контакторе - " + wireCalculation.wireCross(gCurrentStarDeltaShoulder)
+                            );
+                            if (gCurrent == 0) power.setText("0");
+                            else
+                                power.setText("~" + Double.toString(wireCalculation.getCalcPower(gCurrent)) + " kW");
+
+                        }
+                        return false;
                     }
-
-                    catch (NumberFormatException e) {
-                        wire_cross_section.setText("Введите корректные значения тока или мощности");
-                    }
-
-                    wire_cross_section.setText(
-                            "Сечение провода - " + wireCalculation.wireCross()+"\n" +
-                            "Линейный ток в звезде - " + gCurrentStarDeltaLine + "\n" +
-                            "Сечение провода для звезды - " + wireCalculation.wireCross(gCurrentStarDeltaLine) + "\n"+
-                            "Ток в звезде (меньший контактор) - " +  gCurrentStarDeltaShoulder + "\n" +
-                            "Сечение на маленьком контакторе - " + wireCalculation.wireCross(gCurrentStarDeltaShoulder)
-                    );
-                    power.setText("~" + Double.toString(wireCalculation.getCalcPower(gCurrent))+" kW");
-
-                }
-                return false;
-            }
-        });
+         });
 
         power.setOnEditorActionListener(new EditText.OnEditorActionListener() {
 
@@ -90,19 +102,31 @@ public class MainActivity extends AppCompatActivity {
                     //сделать, что нужно по нажатию на Done
                     try {
                         gPower = Double.parseDouble(power.getText().toString());
-                        Log.e(TAG, "Присваивание после ввода --> ");
+                        //Log.e(TAG, "Присваивание после ввода --> ");
                         //gPower = Double.parseDouble(power.getText().toString());
-                        wireCalculation.setPower(gPower);
-                        Log.e(TAG, "Установка");
+                        wireCalculation.setCurrent(new BigDecimal(wireCalculation.getCalcCurrent(gPower)*1.1).setScale(2, RoundingMode.UP).doubleValue());
+                        //Log.e(TAG, "Установка");
                         wireCrossSection = wireCalculation.wireCross();
-                        Log.e(TAG, "візов метода wireCross() --> ");
+                        //Log.e(TAG, "вызов метода wireCross() --> ");
+                        wireCalculation.starDelta();
+                        gCurrentStarDeltaLine = wireCalculation.getCurrentStarDeltaLine();
+                        gCurrentStarDeltaShoulder = wireCalculation.getCurrentStarDeltaShoulder();
                     }
 
                     catch (NumberFormatException e) {
                         wire_cross_section.setText("Введите корректные значения тока или мощности");
                     }
 
-                    wire_cross_section.setText("Сечение провода - " + wireCalculation.wireCross());
+                    wire_cross_section.setText(
+                            "Сечение провода - " + wireCalculation.wireCross() + "\n" +
+                                    "Линейный ток в звезде - " + gCurrentStarDeltaLine + "\n" +
+                                    "Сечение провода для звезды - " + wireCalculation.wireCross(gCurrentStarDeltaLine) + "\n" +
+                                    "Ток в звезде (меньший контактор) - " + gCurrentStarDeltaShoulder + "\n" +
+                                    "Сечение на маленьком контакторе - " + wireCalculation.wireCross(gCurrentStarDeltaShoulder)
+                    );
+                    if (gPower == 0) current.setText("0");
+                    else
+                        current.setText("~" + Double.toString(new BigDecimal(wireCalculation.getCalcCurrent(gPower)*1.1).setScale(2, RoundingMode.UP).doubleValue()) + " A");
                 }
                 return false;
             }
@@ -154,13 +178,37 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+       switch (id) {
+           case R.id.action_settings:
+               // TODO Написать настроки программы Setting
+               return true;
 
-        return super.onOptionsItemSelected(item);
+           case R.id.about_prog:
+               AlertDialog.Builder builder;
+               builder = new AlertDialog.Builder(MainActivity.this);
+               builder.setTitle("о программе!")
+                       .setMessage("Подбор сечения." + "\n" + "Версия программы:" + appVersion)
+                       .setCancelable(false)
+                       .setNegativeButton("ОК",
+                               new DialogInterface.OnClickListener() {
+                                   public void onClick(DialogInterface dialog, int id) {
+                                       dialog.cancel();
+                                   }
+                               });
+               AlertDialog alert = builder.create();
+               alert.show();
+
+               return true;
+
+           default:
+               return super.onOptionsItemSelected(item);
+       }
+
     }
+
+
+
+
    /* public void trueOrFolse(View view){
         controller.discretInOutPump[1].wsk = !controller.discretInOutPump[1].wsk;
         Toast toast = Toast.makeText(getApplicationContext(),
