@@ -2,6 +2,7 @@ package com.example.vladyslav_kovega.mycorsystem;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -180,7 +181,10 @@ public class MainActivity extends AppCompatActivity {
 
        switch (id) {
            case R.id.action_settings:
-               // TODO Написать настроки программы Setting
+               // Пыбор пункта меню выведет Активити настроек.
+               Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+               startActivity(intent);
+
                return true;
 
            case R.id.about_prog:

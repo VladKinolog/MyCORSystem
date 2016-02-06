@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MyCORSystem</string>
+    <string name="title_activity_main">PromaProg</string>
+
+
+    <string name="action_settings">Setting</string>
+    <string name="about_prog">About</string>
+</resources>

@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">MyCORSystem</string>
-    <string name="title_activity_main">Прога за 1000 баксов</string>
+    <string name="title_activity_main">ПромаПрог</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="about_prog">О Программе.</string>
+
+    <string name="action_settings">Настройки</string>
+    <string name="about_prog">О Программе</string>
+    
+    <string name="color_bg_change">Выбор цвета фона</string>
 </resources>
