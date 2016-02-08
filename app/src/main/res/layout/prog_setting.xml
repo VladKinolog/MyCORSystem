@@ -7,7 +7,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:background="@color/green_bg">
+    android:background="@color/green_bg"
+    android:id="@+id/activity_root_element">
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,42 +24,41 @@
         android:orientation="horizontal">
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_weight="1"
-            android:background="@color/green_bg"
-            android:layout_margin="4dp"/>
-
-
+            android:background="@drawable/shape_button_color_green"
+            android:layout_margin="4dp"
+            android:onClick="onClickGreenBgButton"/>
         <Button
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/shape_button_colorbg"
-            android:layout_margin="4dp"/>
+            android:background="@drawable/shape_button_color_blue"
+            android:layout_margin="4dp"
+            android:onClick="onClickBlueBgButton"/>
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_weight="1"
-            android:background="@color/light_yel_bg"
-            android:layout_margin="4dp"/>
+            android:background="@drawable/shape_button_color_light_yellow"
+            android:layout_margin="4dp"
+            android:onClick="onClickLightyellowBgButton"/>
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="040dp"
             android:layout_height="40dp"
-            android:layout_weight="1"
-            android:background="@color/yellow_bg"
-            android:layout_margin="4dp"/>
+            android:background="@drawable/shape_button_color_yellow"
+            android:layout_margin="4dp"
+            android:onClick="onClickYellowBgButton"/>
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_weight="1"
-            android:background="@color/pink_bg"
-            android:layout_margin="4dp"/>
+            android:background="@drawable/shape_button_color_pink"
+            android:layout_margin="4dp"
+            android:onClick="onClickPinkBgButton"/>
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_weight="1"
-            android:background="@color/red_bg"
-            android:layout_margin="4dp"/>
+            android:background="@drawable/shape_button_color_red"
+            android:layout_margin="4dp"
+            android:onClick="onClickRedBgButton"/>
 
     </LinearLayout>
 
