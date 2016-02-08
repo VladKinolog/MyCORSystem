@@ -212,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
    /* public void trueOrFolse(View view){
         controller.discretInOutPump[1].wsk = !controller.discretInOutPump[1].wsk;
         Toast toast = Toast.makeText(getApplicationContext(),
