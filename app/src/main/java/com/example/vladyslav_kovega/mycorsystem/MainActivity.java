@@ -3,7 +3,8 @@ package com.example.vladyslav_kovega.mycorsystem;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
@@ -26,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
     Controller controller = new Controller();
 
 */
+    static final private int SET_SETTING = 2;
+
+    public static final String COLOR_KEY_MAIN = "com.example.vladyslav_kovega.mycorsystem_COLOR_KEY_MAIN";
+    public static final String TAG = "MainActivity";
+
     double gCurrent, gPower, gCurrentStarDeltaLine, gCurrentStarDeltaShoulder;
     EditText current, power;
     TextView wire_cross_section;
@@ -33,7 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private String appVersion = BuildConfig.VERSION_NAME;
 
     WireCalculation wireCalculation;
-    public static final String TAG = "MainActivity";
+    int color = 24000;
+
+
+
 
 
     @Override
@@ -181,9 +191,14 @@ public class MainActivity extends AppCompatActivity {
 
        switch (id) {
            case R.id.action_settings:
-               // Пыбор пункта меню выведет Активити настроек.
+               Log.e(TAG, "Выбор меню вызова активити Настроек!!!!!!!!!!!!!!!!!");
+               // Выбор пункта меню выведет Активити настроек.
                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
-               startActivity(intent);
+               LinearLayout linearLayoutRoot = (LinearLayout) findViewById(R.id.lL);
+               //Запуск активити свойств с ожиданием результата.
+               intent.putExtra(COLOR_KEY_MAIN, color);
+               startActivityForResult(intent,SET_SETTING);
+               Log.e(TAG, "Запуск активити с ожиданием результата!!!!!!!!!!!!!!!!!");
 
                return true;
 
@@ -210,7 +225,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e(TAG, "вызов метода onActivityResult!!!!!!!!!!!!!!!!!" +  "requestCode = " + requestCode + "RESULT_OK" + RESULT_OK +", resultCode = " + resultCode);
+        LinearLayout linearLayoutRoot = (LinearLayout) findViewById(R.id.lL);
 
+        if (requestCode == SET_SETTING){
+            if (resultCode == RESULT_OK){
+                int colorbg = data.getIntExtra(SettingActivity.COLOR_KEY,ContextCompat.getColor(getApplicationContext(), R.color.green_bg));
+                linearLayoutRoot.setBackgroundColor(colorbg);
+                this.color = colorbg;
+            //} else {
+             //   linearLayoutRoot.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green_bg));
+            }
+        }
+
+    }
 
    /* public void trueOrFolse(View view){
         controller.discretInOutPump[1].wsk = !controller.discretInOutPump[1].wsk;
