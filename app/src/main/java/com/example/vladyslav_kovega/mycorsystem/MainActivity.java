@@ -1,8 +1,10 @@
 package com.example.vladyslav_kovega.mycorsystem;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -28,19 +30,25 @@ public class MainActivity extends AppCompatActivity {
     Controller controller = new Controller();
 
 */
-    static final private int SET_SETTING = 2;
+    private static final int SET_SETTING = 0;
 
     public static final String COLOR_KEY_MAIN = "com.example.vladyslav_kovega.mycorsystem_COLOR_KEY_MAIN";
     public static final String TAG = "MainActivity";
+    public static final String APP_PREFERENCES = "mySetting";
+    public static final String APP_PREF_COLOR_BG = "colorBg";
 
     double gCurrent, gPower, gCurrentStarDeltaLine, gCurrentStarDeltaShoulder;
+
     EditText current, power;
     TextView wire_cross_section;
     String wireCrossSection;
+
+    private SharedPreferences mySetting;
+
     private String appVersion = BuildConfig.VERSION_NAME;
 
     WireCalculation wireCalculation;
-    int color = 24000;
+    int color;
 
 
 
@@ -50,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mySetting = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         wireCalculation =  new WireCalculation();
         // обработка вьюшек
@@ -176,6 +186,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        Log.e(TAG, "onResume!!!!!!!!!!!!!!!!!!!!!");
+                LinearLayout linearLayoutRoot = (LinearLayout) findViewById(R.id.lL);
+        if (mySetting.contains(APP_PREF_COLOR_BG)){
+            color = mySetting.getInt(APP_PREF_COLOR_BG,ContextCompat.getColor(getApplicationContext(), R.color.green_bg));
+            linearLayoutRoot.setBackgroundColor(color);
+        }
+    }
+
+    public void onPause(){
+        super.onPause();
+        Log.e(TAG, "onPause!!!!!!!!!!!!!!!!!!!!!");
+        SharedPreferences.Editor editor = mySetting.edit();
+        editor.putInt(APP_PREF_COLOR_BG, color);
+        editor.apply();
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -226,20 +256,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult (int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         Log.e(TAG, "вызов метода onActivityResult!!!!!!!!!!!!!!!!!" +  "requestCode = " + requestCode + "RESULT_OK" + RESULT_OK +", resultCode = " + resultCode);
-        LinearLayout linearLayoutRoot = (LinearLayout) findViewById(R.id.lL);
+        //LinearLayout linearLayoutRoot = (LinearLayout) findViewById(R.id.lL);
 
         if (requestCode == SET_SETTING){
             if (resultCode == RESULT_OK){
-                int colorbg = data.getIntExtra(SettingActivity.COLOR_KEY,ContextCompat.getColor(getApplicationContext(), R.color.green_bg));
-                linearLayoutRoot.setBackgroundColor(colorbg);
-                this.color = colorbg;
+                color = data.getIntExtra(SettingActivity.COLOR_KEY,ContextCompat.getColor(getApplicationContext(), R.color.green_bg));
+                //linearLayoutRoot.setBackgroundColor(colorbg);
+                //this.color = colorbg;
             //} else {
              //   linearLayoutRoot.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.green_bg));
             }
         }
+        SharedPreferences.Editor editor = mySetting.edit();
+        editor.putInt(APP_PREF_COLOR_BG,color);
+        editor.apply();
 
     }
 
